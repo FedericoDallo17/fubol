@@ -10,31 +10,47 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_09_123145) do
+ActiveRecord::Schema[7.1].define(version: 2024_02_16_175240) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "users", force: :cascade do |t|
-    t.string "provider", default: "email", null: false
-    t.string "uid", default: "", null: false
-    t.string "encrypted_password", default: "", null: false
-    t.string "reset_password_token"
-    t.datetime "reset_password_sent_at"
-    t.boolean "allow_password_change", default: false
-    t.datetime "remember_created_at"
-    t.string "confirmation_token"
-    t.datetime "confirmed_at"
-    t.datetime "confirmation_sent_at"
-    t.string "unconfirmed_email"
-    t.string "name"
-    t.string "email"
-    t.json "tokens"
+  create_table "match_players", force: :cascade do |t|
+    t.bigint "match_id", null: false
+    t.bigint "player_id", null: false
+    t.boolean "home_team", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
-    t.index ["email"], name: "index_users_on_email", unique: true
-    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
-    t.index ["uid", "provider"], name: "index_users_on_uid_and_provider", unique: true
+    t.index ["match_id", "player_id"], name: "index_match_players_on_match_id_and_player_id", unique: true
+    t.index ["match_id"], name: "index_match_players_on_match_id"
+    t.index ["player_id"], name: "index_match_players_on_player_id"
   end
 
+  create_table "matches", force: :cascade do |t|
+    t.date "date", null: false
+    t.bigint "pitch_id", null: false
+    t.integer "goals_home_team", null: false
+    t.integer "goals_away_team", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["pitch_id"], name: "index_matches_on_pitch_id"
+  end
+
+  create_table "pitches", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "players", force: :cascade do |t|
+    t.string "first_name", null: false
+    t.string "last_name", null: false
+    t.string "nickname"
+    t.boolean "neocoaster", default: true, null: false
+    t.bigint "invited_by_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["invited_by_id"], name: "index_players_on_invited_by_id"
+  end
+
+  add_foreign_key "players", "players", column: "invited_by_id"
 end

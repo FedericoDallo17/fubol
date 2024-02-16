@@ -2,7 +2,7 @@
 
 module Api
   module V1
-    class UsersController < Api::ApplicationController
+    class MatchesController < Api::ApplicationController
       def index
         render json: { message: "Hello World" }
       end
